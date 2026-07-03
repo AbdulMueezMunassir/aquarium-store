@@ -1,0 +1,293 @@
+﻿<div class="admin-container">
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="logo-area">
+      <img src="assets/logo.png" alt="AquaStore" class="brand-logo">
+      <h2>AquaStore Control Panel</h2>
+    </div>
+    <div class="header-nav">
+      <button [class.active]="currentPage === 'inventory'" (click)="navigateTo('inventory')">📦 Inventory</button>
+      <button [class.active]="currentPage === 'orders'" (click)="navigateTo('orders')">📋 Orders</button>
+      <button [class.active]="currentPage === 'all-fish'" (click)="navigateTo('all-fish')">🐠 All Fish</button>
+    </div>
+    <div class="header-right">
+      <span class="user-info">👤 {{ currentUser?.username || 'Admin' }}</span>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" *ngIf="currentPage === 'inventory'">
+      <h3>📁 Categories</h3>
+      <button class="create-folder-btn" (click)="showCategoryModal = true">+ Create Folder</button>
+      
+      <!-- Stats -->
+      <div class="stats-summary">
+        <div class="stat-item">
+          <span class="stat-value">{{ totalCategories }}</span>
+          <span class="stat-label">Categories</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ totalFish }}</span>
+          <span class="stat-label">Total Fish</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" [class.warning]="lowStockCount > 0">{{ lowStockCount }}</span>
+          <span class="stat-label">Low Stock</span>
+        </div>
+      </div>
+
+      <!-- Threshold Control -->
+      <div class="threshold-control">
+        <label>⚠️ Low Stock Threshold</label>
+        <div class="threshold-input">
+          <input type="number" [(ngModel)]="thresholdAlert" min="1" max="20">
+          <button (click)="updateThreshold()">Apply</button>
+        </div>
+        <small style="color:#6b7280; font-size:11px;">Fish with stock ≤ {{ thresholdAlert }} will show alert</small>
+      </div>
+
+      <div class="folder-list">
+        <div *ngFor="let cat of categories" class="folder-item">
+          <img [src]="cat.image || 'https://picsum.photos/seed/' + cat.name + '/40/40'" class="cat-icon" onerror="this.style.display='none'">
+          <button [class.active]="selectedCategory?._id === cat._id" (click)="selectCategory(cat)">📁 {{ cat.name }}</button>
+          <button class="delete-cat-btn" (click)="deleteCategory(cat)" title="Delete Category">✕</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Inventory Page -->
+      <div *ngIf="currentPage === 'inventory'">
+        <div class="content-overlay">
+          <div class="content-header">
+            <h2>{{ selectedCategory?.name || 'Select a category' }}</h2>
+            <div class="header-actions">
+              <input type="text" class="search-input" [(ngModel)]="searchQuery" placeholder="🔍 Search fish...">
+              <button class="add-fish-btn" (click)="showFishModal = true">➕ Add Fish</button>
+            </div>
+          </div>
+
+          <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
+          <div *ngIf="isLoading" class="loading-text">Loading...</div>
+
+          <div class="fish-grid" *ngIf="!isLoading">
+            <div class="fish-card" *ngFor="let fish of filteredFishes" [class.low-stock]="fish.stock <= thresholdAlert">
+              <div class="stock-badge" *ngIf="fish.stock <= thresholdAlert">⚠️ Low Stock!</div>
+              <img [src]="fish.imageUrl" alt="{{ fish.name }}" class="fish-thumb" onerror="this.src='https://picsum.photos/seed/' + fish.name + '/500/350'">
+              <div class="card-body">
+                <div class="card-header">
+                  <h4>{{ fish.name }}</h4>
+                  <div class="card-actions">
+                    <button class="edit-btn" (click)="openEditModal(fish)" title="Edit">✏️</button>
+                    <button class="delete-btn" (click)="deleteFish(fish)" title="Delete">🗑️</button>
+                  </div>
+                </div>
+                <p>{{ fish.description }}</p>
+                <div class="stats">
+                  <span>📏 {{ fish.size }}</span>
+                  <span>📦 {{ fish.stock }}</span>
+                  <span>💰 LKR {{ fish.priceLKR }}</span>
+                </div>
+                <div class="stock-controls">
+                  <button class="stock-btn" (click)="updateStock(fish, -1)">−</button>
+                  <span class="stock-count">{{ fish.stock }}</span>
+                  <button class="stock-btn" (click)="updateStock(fish, 1)">+</button>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="filteredFishes.length === 0" class="empty-state">🐠 No fish found. Add some!</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- All Fish Page -->
+      <div *ngIf="currentPage === 'all-fish'">
+        <div class="content-overlay">
+          <div class="content-header">
+            <h2>🐠 All Fish</h2>
+            <div class="header-actions">
+              <input type="text" class="search-input" [(ngModel)]="searchQuery" placeholder="🔍 Search all fish...">
+            </div>
+          </div>
+          <div class="fish-grid">
+            <div class="fish-card" *ngFor="let fish of allFishes" [class.low-stock]="fish.stock <= thresholdAlert">
+              <div class="stock-badge" *ngIf="fish.stock <= thresholdAlert">⚠️ Low Stock!</div>
+              <img [src]="fish.imageUrl" alt="{{ fish.name }}" class="fish-thumb" onerror="this.src='https://picsum.photos/seed/' + fish.name + '/500/350'">
+              <div class="card-body">
+                <h4>{{ fish.name }}</h4>
+                <p>{{ fish.description }}</p>
+                <div class="stats">
+                  <span>📏 {{ fish.size }}</span>
+                  <span>📦 {{ fish.stock }}</span>
+                  <span>💰 LKR {{ fish.priceLKR }}</span>
+                </div>
+                <span class="category-tag" *ngIf="fish.category">📁 {{ fish.category?.name }}</span>
+              </div>
+            </div>
+            <div *ngIf="allFishes.length === 0" class="empty-state">🐠 No fish found</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders Page -->
+      <div *ngIf="currentPage === 'orders'">
+        <div class="content-overlay">
+          <div class="content-header">
+            <h2>📋 Orders</h2>
+            <span class="order-count">Total: {{ orders.length }} orders</span>
+          </div>
+          <div class="orders-list">
+            <div class="order-card" *ngFor="let order of orders">
+              <div class="order-header">
+                <div>
+                  <strong>Order #{{ order._id?.slice(-6) || 'N/A' }}</strong>
+                  <span class="order-customer">👤 {{ order.customer?.username || 'Unknown' }}</span>
+                </div>
+                <span class="order-status" [style.color]="getStatusColor(order.status)">{{ order.status || 'Pending' }}</span>
+              </div>
+              <div class="order-body">
+                <span>💰 LKR {{ order.totalAmount }}</span>
+                <span>📅 {{ order.createdAt | date:'medium' }}</span>
+                <span>📦 {{ order.items?.length || 0 }} items</span>
+                <button class="map-btn" (click)="openMap(order.address || 'Colombo, Sri Lanka')">📍 Map</button>
+                <button class="view-btn" (click)="viewOrderDetails(order)">👁️ View</button>
+                <select class="status-select" [value]="order.status" (change)="updateOrderStatus(order, $any($event.target).value)">
+                  <option value="Pending">Pending</option>
+                  <option value="Processing">Processing</option>
+                  <option value="Packing">Packing</option>
+                  <option value="Dispatching">Dispatching</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
+            </div>
+            <div *ngIf="orders.length === 0" class="empty-state">📭 No orders yet</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- Add Category Modal -->
+<div class="modal" *ngIf="showCategoryModal">
+  <div class="modal-content">
+    <h3>📁 New Category</h3>
+    <label>Category Name *</label>
+    <input [(ngModel)]="newCategoryName" placeholder="Enter category name">
+    <label>Category Image URL (optional)</label>
+    <input [(ngModel)]="newCategoryImage" placeholder="https://example.com/image.jpg">
+    <div class="actions">
+      <button (click)="saveCategory()" class="btn-success">Create</button>
+      <button (click)="showCategoryModal = false" class="btn-danger">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Fish Modal -->
+<div class="modal" *ngIf="showFishModal">
+  <div class="modal-content">
+    <h3>🐠 Add New Fish</h3>
+    <label>Fish Name *</label>
+    <input [(ngModel)]="newFish.name" placeholder="Enter fish name">
+    <label>Description</label>
+    <input [(ngModel)]="newFish.description" placeholder="Enter description">
+    <label>Size</label>
+    <input [(ngModel)]="newFish.size" placeholder="e.g. 4-5 inches">
+    <label>Stock</label>
+    <input [(ngModel)]="newFish.stock" type="number" placeholder="0">
+    <label>Price (LKR)</label>
+    <input [(ngModel)]="newFish.priceLKR" type="number" placeholder="0">
+    <label>Image URL (optional)</label>
+    <input [(ngModel)]="newFish.imageUrl" placeholder="https://example.com/fish.jpg">
+    <div class="actions">
+      <button (click)="addFish()" class="btn-success">Add Fish</button>
+      <button (click)="showFishModal = false; resetFishForm()" class="btn-danger">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Fish Modal -->
+<div class="modal" *ngIf="showEditModal">
+  <div class="modal-content">
+    <h3>✏️ Edit Fish</h3>
+    <label>Fish Name</label>
+    <input [(ngModel)]="editFish.name" placeholder="Fish Name">
+    <label>Description</label>
+    <input [(ngModel)]="editFish.description" placeholder="Description">
+    <label>Size</label>
+    <input [(ngModel)]="editFish.size" placeholder="Size">
+    <label>Stock</label>
+    <input [(ngModel)]="editFish.stock" type="number" placeholder="Stock">
+    <label>Price (LKR)</label>
+    <input [(ngModel)]="editFish.priceLKR" type="number" placeholder="Price">
+    <label>Image URL</label>
+    <input [(ngModel)]="editFish.imageUrl" placeholder="https://example.com/fish.jpg">
+    <div class="actions">
+      <button (click)="editFishDetails()" class="btn-success">Save</button>
+      <button (click)="showEditModal = false" class="btn-danger">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal" *ngIf="showDeleteModal">
+  <div class="modal-content">
+    <h3>🗑️ Delete Fish</h3>
+    <p>Are you sure you want to delete <strong>{{ selectedFish?.name }}</strong>?</p>
+    <p style="color: #ef4444; font-size: 13px;">This action cannot be undone.</p>
+    <div class="actions">
+      <button (click)="confirmDelete()" class="btn-danger">Delete</button>
+      <button (click)="showDeleteModal = false" class="btn-primary">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Order Details Modal -->
+<div class="modal" *ngIf="showOrderModal">
+  <div class="modal-content order-details">
+    <h3>📋 Order Details</h3>
+    <div class="order-info">
+      <p><strong>Order #:</strong> {{ selectedOrder?._id?.slice(-6) || 'N/A' }}</p>
+      <p><strong>Customer:</strong> {{ selectedOrder?.customer?.username || 'Unknown' }}</p>
+      <p><strong>Status:</strong> <span [style.color]="getStatusColor(selectedOrder?.status)">{{ selectedOrder?.status }}</span></p>
+      <p><strong>Date:</strong> {{ selectedOrder?.createdAt | date:'full' }}</p>
+      <p><strong>Address:</strong> {{ selectedOrder?.address || 'N/A' }}</p>
+      <p><strong>Total:</strong> LKR {{ selectedOrder?.totalAmount }}</p>
+    </div>
+    <div class="order-items" *ngIf="selectedOrder?.items?.length">
+      <h4>Items:</h4>
+      <div class="order-item" *ngFor="let item of selectedOrder?.items">
+        <span>{{ item.name || item.fish?.name }}</span>
+        <span>x{{ item.quantity }}</span>
+        <span>LKR {{ item.price }}</span>
+      </div>
+    </div>
+    <div class="actions">
+      <button (click)="showOrderModal = false" class="btn-primary">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Map Modal -->
+<div class="modal" *ngIf="showMap">
+  <div class="modal-content map-modal">
+    <h3>📍 Customer Location</h3>
+    <p>{{ customerAddress }}</p>
+    <iframe 
+      [src]="mapUrl" 
+      width="100%" 
+      height="400" 
+      frameborder="0"
+      style="border:0; border-radius:8px; margin:10px 0;">
+    </iframe>
+    <div class="actions">
+      <button (click)="closeMap()" class="btn-primary">Close</button>
+    </div>
+  </div>
+</div>

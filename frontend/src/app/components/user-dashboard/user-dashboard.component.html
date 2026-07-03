@@ -1,0 +1,132 @@
+<div class="user-container">
+    <!-- Header -->
+    <header class="user-header">
+      <div class="logo-area">
+        <img src="assets/logo.png" alt="AquaStore" class="brand-logo">
+        <h2>AquaStore</h2>
+      </div>
+      <div class="header-nav">
+        <button [class.active]="currentPage === 'shop'" (click)="navigateTo('shop')">🏠 Shop</button>
+        <button [class.active]="currentPage === 'cart'" (click)="navigateTo('cart')">🛒 Cart ({{ totalCartItems }})</button>
+        <button [class.active]="currentPage === 'orders'" (click)="navigateTo('orders')">📋 Orders</button>
+      </div>
+      <div class="header-right">
+        <span class="user-info">👤 {{ currentUser?.username || 'Customer' }}</span>
+        <button class="logout-btn" (click)="logout()">Logout</button>
+      </div>
+    </header>
+  
+    <div class="user-body">
+      <!-- Categories Sidebar -->
+      <aside class="user-sidebar" *ngIf="currentPage === 'shop'">
+        <h3>📁 Categories</h3>
+        <div class="category-list">
+          <button *ngFor="let cat of categories"
+                  [class.active]="selectedCategory?._id === cat._id"
+                  (click)="selectCategory(cat)">
+            {{ cat.name }}
+          </button>
+        </div>
+      </aside>
+  
+      <!-- Main Content -->
+      <main class="user-content">
+        <!-- Shop View -->
+        <div *ngIf="currentPage === 'shop'" class="shop-view">
+          <div class="shop-header">
+            <h2>{{ selectedCategory?.name || 'Select a category' }}</h2>
+            <input type="text" class="search-input" [(ngModel)]="searchQuery" placeholder="🔍 Search fish...">
+          </div>
+          <div class="fish-grid-user">
+            <div class="fish-card-user" *ngFor="let fish of filteredFishes">
+              <img [src]="fish.imageUrl" alt="{{ fish.name }}" class="fish-thumb-user"
+                   onerror="this.src='https://picsum.photos/seed/' + fish.name + '/300/200'">
+              <div class="card-body-user">
+                <h4>{{ fish.name }}</h4>
+                <p>{{ fish.description }}</p>
+                <div class="fish-details">
+                  <span>📏 {{ fish.size }}</span>
+                  <span>💰 LKR {{ fish.priceLKR }}</span>
+                  <span class="stock-info" [class.low-stock]="fish.stock <= 5">
+                    📦 {{ fish.stock }} left
+                  </span>
+                </div>
+                <button class="add-to-cart-btn" (click)="addToCart(fish)"
+                        [disabled]="fish.stock <= 0">
+                  {{ fish.stock > 0 ? '🛒 Add to Cart' : 'Out of Stock' }}
+                </button>
+              </div>
+            </div>
+            <div *ngIf="filteredFishes.length === 0" class="empty-state-user">
+              🐠 No fish available
+            </div>
+          </div>
+        </div>
+  
+        <!-- Cart View -->
+        <div *ngIf="currentPage === 'cart'" class="cart-view">
+          <h2>🛒 Your Cart</h2>
+          <div *ngIf="cart.length === 0" class="empty-cart">
+            <p>Your cart is empty</p>
+            <button class="continue-shopping" (click)="navigateTo('shop')">Continue Shopping</button>
+          </div>
+          <div *ngIf="cart.length > 0" class="cart-items">
+            <div class="cart-item" *ngFor="let item of cart; let i = index">
+              <img [src]="item.imageUrl" alt="{{ item.name }}" class="cart-item-img">
+              <div class="cart-item-info">
+                <h4>{{ item.name }}</h4>
+                <p>LKR {{ item.priceLKR }}</p>
+              </div>
+              <div class="cart-item-controls">
+                <button (click)="updateQuantity(i, -1)">−</button>
+                <span>{{ item.quantity }}</span>
+                <button (click)="updateQuantity(i, 1)">+</button>
+              </div>
+              <button class="remove-btn" (click)="removeFromCart(i)">✕</button>
+            </div>
+            <div class="cart-total">
+              <h3>Total: LKR {{ getCartTotal() }}</h3>
+              <button class="checkout-btn" (click)="placeOrder()">Place Order</button>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Orders View -->
+        <div *ngIf="currentPage === 'orders'" class="orders-view">
+          <div class="shop-header">
+            <h2>📋 My Orders</h2>
+          </div>
+          <div class="orders-list-user">
+            <div class="order-card-user" *ngFor="let order of orders">
+              <div class="order-header-user">
+                <strong>Order #{{ order._id?.slice(-6) || 'N/A' }}</strong>
+                <span class="order-status-user" [style.color]="getStatusColor(order.status)">
+                  {{ order.status || 'Pending' }}
+                </span>
+              </div>
+              <div class="order-body-user">
+                <span>💰 LKR {{ order.totalAmount }}</span>
+                <span>📅 {{ order.createdAt | date:'medium' }}</span>
+                <button class="view-btn" (click)="viewOrderDetails(order)">View</button>
+              </div>
+            </div>
+            <div *ngIf="orders.length === 0" class="empty-state-user">📭 No orders yet</div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  
+  <!-- Order Details Modal -->
+  <div class="modal-user" *ngIf="showOrderModal">
+    <div class="modal-content-user">
+      <h3>📋 Order Details</h3>
+      <p><strong>Order #:</strong> {{ selectedOrder?._id?.slice(-6) || 'N/A' }}</p>
+      <p><strong>Status:</strong> {{ selectedOrder?.status }}</p>
+      <p><strong>Date:</strong> {{ selectedOrder?.createdAt | date:'full' }}</p>
+      <p><strong>Total:</strong> LKR {{ selectedOrder?.totalAmount }}</p>
+      <div class="actions">
+        <button (click)="showOrderModal = false" class="btn-primary">Close</button>
+      </div>
+    </div>
+  </div>

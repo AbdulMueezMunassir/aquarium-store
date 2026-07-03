@@ -1,0 +1,5 @@
+﻿{
+  "angular.enable-strict-mode-prompt": false,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000
+}

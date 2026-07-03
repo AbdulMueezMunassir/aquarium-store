@@ -1,0 +1,36 @@
+﻿<div class="login-container">
+  <div class="login-card">
+    <div class="logo-area">
+      <img src="assets/logo.png" alt="AquaStore" class="login-logo" onerror="this.src='https://placehold.co/100x100/00adb5/ffffff?text=Aqua'">
+      <h1>AquaStore</h1>
+    </div>
+    
+    <h2>{{ isLogin ? 'Welcome Back' : 'Create Account' }}</h2>
+    <p class="subtitle">{{ isLogin ? 'Login to manage your aquarium store' : 'Sign up to get started' }}</p>
+
+    <div class="success" *ngIf="successMessage">{{ successMessage }}</div>
+    <div class="error" *ngIf="error">{{ error }}</div>
+
+    <form (ngSubmit)="onSubmit()" #form="ngForm">
+      <div *ngIf="!isLogin">
+        <input type="text" [(ngModel)]="signupData.username" name="username" placeholder="Username" required>
+        <input type="text" [(ngModel)]="signupData.address" name="address" placeholder="Address">
+        <input type="text" [(ngModel)]="signupData.phone" name="phone" placeholder="Phone Number">
+      </div>
+      
+      <input type="email" [(ngModel)]="loginData.email" name="email" placeholder="Email" required>
+      <input type="password" [(ngModel)]="loginData.password" name="password" placeholder="Password" required>
+
+      <button type="submit" [disabled]="loading" class="btn-primary">
+        {{ loading ? 'Loading...' : (isLogin ? 'Login' : 'Sign Up') }}
+      </button>
+    </form>
+
+    <p class="toggle-link">
+      {{ isLogin ? "Don't have an account?" : "Already have an account?" }}
+      <span (click)="toggleMode()">
+        {{ isLogin ? 'Sign Up' : 'Login' }}
+      </span>
+    </p>
+  </div>
+</div>
