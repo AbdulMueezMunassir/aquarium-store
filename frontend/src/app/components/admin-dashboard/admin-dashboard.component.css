@@ -947,3 +947,402 @@
     width: 100% !important;
   }
 }
+/* ===== FISH MODAL - NEW STYLES ===== */
+.fish-modal {
+  width: 500px !important;
+  max-width: 95% !important;
+}
+
+.row-fields {
+  display: flex;
+  gap: 15px;
+  margin: 5px 0;
+}
+
+.field-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.field-group label {
+  margin-top: 0;
+  font-size: 12px;
+}
+
+.select-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(10, 12, 16, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  appearance: none;
+  cursor: pointer;
+}
+
+.select-input:focus {
+  outline: none;
+  border-color: #00adb5;
+}
+
+.select-input option {
+  background: #1e222b;
+  color: white;
+}
+
+/* ===== DESCRIPTION BUTTONS ===== */
+.description-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 5px 0 8px 0;
+}
+
+.desc-btn {
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.desc-btn:hover {
+  background: rgba(0, 173, 181, 0.15);
+  color: #00adb5;
+  border-color: rgba(0, 173, 181, 0.2);
+}
+
+.desc-btn.active {
+  background: rgba(0, 173, 181, 0.25);
+  color: #00adb5;
+  border-color: #00adb5;
+}
+
+.desc-input {
+  margin-top: 0 !important;
+}
+
+/* ===== EDIT MODAL - UPDATED ===== */
+.edit-modal {
+  width: 500px !important;
+  max-width: 95% !important;
+}
+/* ===== LOGO CLICKABLE ===== */
+.logo-area {
+  cursor: pointer;
+}
+
+/* ===== FISH CARD MODERN DESIGN ===== */
+.fish-image-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.fish-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 5px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.fish-image-wrapper:hover .fish-actions {
+  opacity: 1;
+}
+
+.fish-actions .edit-btn,
+.fish-actions .delete-btn {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.fish-actions .edit-btn:hover {
+  background: rgba(0, 173, 181, 0.8);
+  transform: scale(1.1);
+}
+
+.fish-actions .delete-btn:hover {
+  background: rgba(239, 68, 68, 0.8);
+  transform: scale(1.1);
+}
+
+/* ===== DESCRIPTION TAGS ===== */
+.description-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 6px 0 8px 0;
+}
+
+.desc-tag {
+  background: rgba(0, 173, 181, 0.15);
+  color: #00adb5;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  border: 1px solid rgba(0, 173, 181, 0.2);
+}
+
+/* ===== FISH DETAILS ROW ===== */
+.fish-details-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 10px 0;
+}
+
+.detail-item {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+/* ===== STOCK SECTION ===== */
+.stock-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stock-value {
+  color: #00adb5;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* ===== SELECTED DESCRIPTIONS ===== */
+.selected-descriptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 6px 0 10px 0;
+}
+
+.selected-desc-tag {
+  background: rgba(0, 173, 181, 0.2);
+  color: #00adb5;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.remove-desc {
+  cursor: pointer;
+  color: #ef4444;
+  font-size: 12px;
+}
+
+/* ===== ANALYTICS STYLES ===== */
+.analytics-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.analytics-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.analytics-icon {
+  font-size: 32px;
+}
+
+.analytics-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.analytics-value {
+  font-size: 22px;
+  font-weight: bold;
+  color: #f3f4f6;
+}
+
+.analytics-label {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* ===== CHART ===== */
+.chart-container {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+}
+
+.chart-container h3 {
+  color: #00adb5;
+  margin-bottom: 15px;
+}
+
+.chart-bars {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 200px;
+  padding: 10px 0;
+}
+
+.bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.bar {
+  width: 30px;
+  min-height: 5px;
+  background: linear-gradient(to top, #00adb5, #00d4ff);
+  border-radius: 4px 4px 0 0;
+  transition: height 0.5s ease;
+}
+
+.bar-label {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+/* ===== SALES TABLE ===== */
+.sales-table {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.sales-table h3 {
+  color: #00adb5;
+  margin-bottom: 15px;
+}
+
+.sales-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.sales-table th {
+  text-align: left;
+  padding: 10px 12px;
+  color: #9ca3af;
+  font-size: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sales-table td {
+  padding: 10px 12px;
+  color: #f3f4f6;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.sales-table tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* ===== FILTER SELECT ===== */
+.filter-select {
+  padding: 8px 16px;
+  background: rgba(15, 17, 21, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: #f3f4f6;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #00adb5;
+}
+
+.filter-select option {
+  background: #1e222b;
+  color: #f3f4f6;
+}
+
+/* ===== FISH CARD UPDATES ===== */
+.fish-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.fish-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(0, 173, 181, 0.3);
+  box-shadow: 0 12px 40px rgba(0, 173, 181, 0.15);
+}
+
+.fish-card.low-stock {
+  border: 2px solid rgba(239, 68, 68, 0.4);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .analytics-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .chart-bars {
+    height: 150px;
+  }
+  
+  .bar {
+    width: 20px;
+  }
+  
+  .sales-table {
+    overflow-x: auto;
+  }
+  
+  .fish-actions {
+    opacity: 1;
+  }
+}
